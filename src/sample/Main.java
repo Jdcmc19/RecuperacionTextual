@@ -18,6 +18,9 @@ public class Main extends Application {
 
 
     public static void main(String[] args) {
-        launch(args);
+
+        FileManager test = new FileManager();
+        test.showFiles("C:\\Users\\Joseph Salas\\Desktop\\TEC\\VI Semestre\\Información Textual\\Tarea programada 1\\man-es");
+        //launch(args);
     }
 }
