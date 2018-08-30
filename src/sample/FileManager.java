@@ -1,5 +1,7 @@
 package sample;
 
+import com.sun.deploy.util.StringUtils;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
@@ -52,20 +54,25 @@ public class FileManager {
             linea = linea.trim();
             String[] words = linea.split(" ");
             if(words.length>0 && !words[0].equals(".\\\"")) {
-                texto+=linea+" ";
+                if(words[0].startsWith(".") && words[0].length()<4){
+                    for(int i=1;i<words.length;i++){
+                        texto+=(words[i]+" ");
+                    }
+                }
+                else
+                    texto+=linea+" ";
             }
         }
         texto = texto.substring(0,texto.length()-1).toLowerCase();
         String[] palabras;
         texto = texto.replace("\t"," ").replace("á","a")
                 .replace("é","e").replace("í","i")
-                .replace("ó","o").replace("ú","u")
-                .replace("."," ").replace(","," ")
-                .replace("_"," ").replaceAll("\\W"," ").replace("-"," ");
-               /* .replace("]"," ").replace("["," ")
-                .replace("}"," ").replace("{"," ")
-                .replace(")"," ").replace(")"," ");*/
+                .replace("ó","o").replace("ú","u").replace("\\-\\-","@")
+                .replaceAll("[(){}_,!`~#$%^&*/\'\"+<>?:;|\\-]"," ");
         palabras = texto.split(" ");
+        for(int i=0;i<palabras.length;i++){
+            palabras[i]=quitarNonWords(palabras[i]);
+        }
 
         String[] stop = {"a","ante","bajo","cabe","con","contra","de","desde","e","el","en","entre","hacia","hasta","ni","la","le","lo","los","las","o","para","pero","por","que","segun","sin","so","uno","unas","unos","y","sobre","tras","u","un","una"};
         ArrayList<String> stopWords = new ArrayList<>(Arrays.asList(stop));
@@ -74,14 +81,9 @@ public class FileManager {
             while(terminos.remove(palabra));
         }
 
-        String a = "";
         Map<String,Integer> diccionario = new HashMap<String,Integer>();
         for(int e=0;e<terminos.size();e++){
-            String tmp = terminos.get(e);/*
-            if(tmp.length()>0 && (tmp.charAt(0)=='(' || tmp.charAt(0)=='[' || tmp.charAt(0)=='{' || tmp.charAt(0)=='\"' ))
-                tmp=tmp.substring(1);
-            if(tmp.length()>0 && (tmp.charAt(tmp.length()-1)==')' || tmp.charAt(tmp.length()-1)==']' || tmp.charAt(tmp.length()-1)=='}' || tmp.charAt(tmp.length()-1)=='\"' ))
-                tmp=tmp.substring(0,tmp.length()-1);*/
+            String tmp = terminos.get(e);
             if(!tmp.equals("")){
                 if(diccionario.containsKey(tmp)){
                     diccionario.put(tmp,diccionario.get(tmp)+1);
@@ -95,5 +97,19 @@ public class FileManager {
         for(String termino : llaves){
             System.out.println(termino+": "+diccionario.get(termino));
         }
+    }
+
+    public String quitarNonWords(String palabra){
+        String[] tmp = palabra.split("\\.");
+        if(palabra.contains(".") && tmp.length==2 && tmp[0].matches("[0-9]+") && tmp[1].matches("[0-9]+")) {
+            return palabra;
+        }
+        else if(palabra.contains("\\f")){
+            return "";
+        }
+        else{
+            return palabra.replaceAll("[\\.\\\\]","");
+        }
+
     }
 }
