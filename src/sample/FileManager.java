@@ -60,16 +60,18 @@ public class FileManager {
             }
         }
     }
-
-    public void createMap() throws FileNotFoundException
-    {
-        File file = new File("C:\\Users\\iworth\\iCloudDrive\\Documents\\TEC\\Semestre II 2018\\Recuperacion textual\\Proyecto\\Tarea programada 1\\man-es\\man2\\accept.2");
+    public String getTextFile(String path)throws FileNotFoundException{
+        File file = new File(path);
         Scanner sc = new Scanner(file);
 
         sc.useDelimiter("\\Z");
-        String texto = sc.next();
-        String[] lineas = texto.split("\n");
-        texto = "";
+        return sc.next();
+    }
+    public void createMap(String text, String[] stop)
+    {
+
+        String[] lineas = text.split("\n");
+        String texto = "";
         for(String linea: lineas){
             linea = linea.trim();
             String[] words = linea.split(" ");
@@ -94,7 +96,6 @@ public class FileManager {
             palabras[i]= quitarNonWords(palabras[i]);
         }
 
-        String[] stop = {"a","ante","bajo","cabe","con","contra","de","desde","e","el","en","entre","hacia","hasta","ni","la","le","lo","los","las","o","para","pero","por","que","segun","sin","so","uno","unas","unos","y","sobre","tras","u","un","una"};
         ArrayList<String> stopWords = new ArrayList<>(Arrays.asList(stop));
         ArrayList<String> terminos = new ArrayList<>(Arrays.asList(palabras));
         for(String palabra : stopWords){
@@ -139,10 +140,10 @@ public class FileManager {
     }
 
 
-    public void saveMap(Map<String,Integer> map)
+    public void saveMap(Map<String,Integer> map,String path)
     {
         try{
-            File fileOne=new File("C:\\Users\\Joseph Salas\\Desktop\\fileone");
+            File fileOne=new File(path);
             FileOutputStream fos=new FileOutputStream(fileOne);
             ObjectOutputStream oos=new ObjectOutputStream(fos);
 
@@ -150,11 +151,14 @@ public class FileManager {
             oos.flush();
             oos.close();
             fos.close();
-        }catch(Exception e){}
-
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+    public void readMap(String path){
         //read from file
         try{
-            File toRead=new File("C:\\Users\\Joseph Salas\\Desktop\\fileone");
+            File toRead=new File(path);
             FileInputStream fis=new FileInputStream(toRead);
             ObjectInputStream ois=new ObjectInputStream(fis);
 
@@ -166,7 +170,9 @@ public class FileManager {
             for(Map.Entry<String,Integer> m :mapInFile.entrySet()){
                 System.out.println(m.getKey()+" : "+m.getValue());
             }
-        }catch(Exception e){}
+        }catch(Exception e){
+            e.printStackTrace();
+        }
     }
 
 }

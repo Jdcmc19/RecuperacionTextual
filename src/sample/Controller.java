@@ -16,7 +16,7 @@ import java.io.File;
 
 public class Controller {
     @FXML
-    TextField txtStopwords,txtIndice,txtColeccion;
+    TextField txtStopwords,txtIndice,txtColeccion,txtConsulta;
     @FXML
     Button btoIniciar, btoStopwords,btoColeccion,btoIndice;
     @FXML
