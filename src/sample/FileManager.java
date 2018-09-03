@@ -1,9 +1,9 @@
 package sample;
 
 import java.io.File;
-import java.io.FilenameFilter;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class FileManager {
 
@@ -31,12 +31,28 @@ public class FileManager {
         {
             File folder = new File(subDirPath.get(y).toString());
             File[] listOfFiles = folder.listFiles();
+
             for (File file : listOfFiles)
             {
                 if (file.isFile())
                 {
                     System.out.println(file.getName());
                 }
+            }
+        }
+    }
+
+    public void validateFiles(File[] listOfFiles)
+    {
+        Pattern fileExtnPtrn = Pattern.compile("([^\\s]+(\\.(?i)(1|2|3|4|5|6|7|8))$)");
+        File[] subDirPathTemp = listOfFiles;
+        int sizeTemp = listOfFiles.length;
+        for(int i = 0; i< sizeTemp; i++)
+        {
+            Matcher mtch = fileExtnPtrn.matcher(listOfFiles[i].getName());
+            if(!mtch.matches())
+            {
+
             }
         }
     }
