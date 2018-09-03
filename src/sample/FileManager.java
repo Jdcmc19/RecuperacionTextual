@@ -2,13 +2,11 @@ package sample;
 
 import com.sun.deploy.util.StringUtils;
 
-import java.io.File;
+import java.io.*;
 
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.io.FileNotFoundException;
-import java.io.FilenameFilter;
 import java.util.*;
 
 
@@ -134,4 +132,36 @@ public class FileManager {
         }
 
     }
+
+
+    public void saveMap(Map<String,Integer> map)
+    {
+        try{
+            File fileOne=new File("C:\\Users\\Joseph Salas\\Desktop\\fileone");
+            FileOutputStream fos=new FileOutputStream(fileOne);
+            ObjectOutputStream oos=new ObjectOutputStream(fos);
+
+            oos.writeObject(map);
+            oos.flush();
+            oos.close();
+            fos.close();
+        }catch(Exception e){}
+
+        //read from file
+        try{
+            File toRead=new File("C:\\Users\\Joseph Salas\\Desktop\\fileone");
+            FileInputStream fis=new FileInputStream(toRead);
+            ObjectInputStream ois=new ObjectInputStream(fis);
+
+            HashMap<String,Integer> mapInFile=(HashMap<String,Integer>)ois.readObject();
+
+            ois.close();
+            fis.close();
+            //print All data in MAP
+            for(Map.Entry<String,Integer> m :mapInFile.entrySet()){
+                System.out.println(m.getKey()+" : "+m.getValue());
+            }
+        }catch(Exception e){}
+    }
+
 }

@@ -25,7 +25,16 @@ public class Main extends Application {
 
         FileManager test = new FileManager();
       //  test.showFiles("C:\\Users\\Joseph Salas\\Desktop\\TEC\\VI Semestre\\Información Textual\\Tarea programada 1\\man-es");
-        test.createMap();
+        //test.createMap();
         //launch(args);
+        Map<String,Integer> hm =new HashMap<String,Integer>();
+
+        hm.put("Hola",3);
+        hm.put("Joseph",4);
+        hm.put("Juande",5);
+
+        test.saveMap(hm);
+
+
     }
 }
