@@ -9,8 +9,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-
-<GridPane alignment="center" hgap="10" prefHeight="334.0" prefWidth="414.0" vgap="10" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/10.0.1" fx:controller="view.Controller">
+<GridPane alignment="center" hgap="10" prefHeight="334.0" prefWidth="414.0" vgap="10" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.Controller">
    <columnConstraints>
       <ColumnConstraints />
    </columnConstraints>
@@ -20,21 +19,21 @@
    <children>
       <Pane prefHeight="433.0" prefWidth="500.0">
          <children>
-            <RadioButton fx:id="rdTfidf" layoutX="129.0" layoutY="182.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="107.0" text="Modelo TF*IDF" />
-            <RadioButton fx:id="rdBm25" layoutX="129.0" layoutY="207.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="107.0" text="Modelo BM25" />
-            <TextField fx:id="txtIndice" layoutX="128.0" layoutY="115.0" prefHeight="25.0" prefWidth="239.0" promptText="Ruta para almacenar indices." />
-            <TextField fx:id="txtColeccion" layoutX="128.0" layoutY="83.0" prefHeight="25.0" prefWidth="239.0" promptText="Ruta de archivos a cargar." />
-            <TextField fx:id="txtStopwords" layoutX="128.0" layoutY="51.0" prefHeight="25.0" prefWidth="239.0" promptText="Ruta del archivo de Stopwords." />
+            <RadioButton fx:id="rdTfidf" layoutX="129.0" layoutY="209.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="107.0" text="Modelo TF*IDF" />
+            <RadioButton fx:id="rdBm25" layoutX="129.0" layoutY="234.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="107.0" text="Modelo BM25" />
+            <TextField fx:id="txtIndice" layoutX="128.0" layoutY="115.0" prefHeight="25.0" prefWidth="239.0" promptText="Ruta para almacenar indices." text="C:\Users\iworth\iCloudDrive\Desktop\colec" />
+            <TextField fx:id="txtColeccion" layoutX="128.0" layoutY="83.0" prefHeight="25.0" prefWidth="239.0" promptText="Ruta de archivos a cargar." text="C:\Users\iworth\iCloudDrive\Documents\TEC\Semestre II 2018\Recuperacion textual\Proyecto\Tarea programada 1\man-es" />
+            <TextField fx:id="txtStopwords" layoutX="128.0" layoutY="51.0" prefHeight="25.0" prefWidth="239.0" promptText="Ruta del archivo de Stopwords." text="C:\Users\iworth\iCloudDrive\Desktop\stops.txt" />
             <Label layoutX="52.0" layoutY="51.0" prefHeight="25.0" prefWidth="77.0" text="Stopwords:" />
             <Label layoutX="52.0" layoutY="83.0" prefHeight="25.0" prefWidth="77.0" text="Colección:" />
             <Label layoutX="52.0" layoutY="115.0" prefHeight="25.0" prefWidth="77.0" text="Indice:" />
-            <Label layoutX="52.0" layoutY="157.0" prefHeight="25.0" prefWidth="146.0" text="Seleccione un modelo:" />
+            <Label layoutX="52.0" layoutY="184.0" prefHeight="25.0" prefWidth="146.0" text="Seleccione un modelo:" />
             <Button fx:id="btoIniciar" layoutX="299.0" layoutY="278.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="77.0" text="Iniciar" />
             <Button fx:id="btoStopwords" layoutX="369.0" layoutY="51.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="27.0" text="..." />
             <Button fx:id="btoColeccion" layoutX="369.0" layoutY="83.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="27.0" text="..." />
             <Button fx:id="btoIndice" layoutX="369.0" layoutY="115.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="27.0" text="..." />
             <Label layoutX="52.0" layoutY="146.0" prefHeight="25.0" prefWidth="77.0" text="Consulta:" />
-            <TextField fx:id="txtConsulta" layoutX="128.0" layoutY="146.0" prefHeight="25.0" prefWidth="268.0" promptText="Digite el exto a buscar." />
+            <TextField fx:id="txtConsulta" layoutX="128.0" layoutY="146.0" prefHeight="25.0" prefWidth="268.0" promptText="Digite el exto a buscar." text="hAola @ayEda hélp cAño " />
          </children>
       </Pane>
    </children>

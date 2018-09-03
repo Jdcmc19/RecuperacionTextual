@@ -14,15 +14,14 @@ public class FileManager {
 
     //ArrayList que va a contener los path de los subdirectorios
     private ArrayList<String> subDirPath = new ArrayList<>();
-    private ArrayList<String> filesWValidate = new ArrayList<>();
 
     public FileManager() {
     }
 
     //Funcion que muerta los archivos por subdirectorio
-    public void showFiles (String directoryPath) throws FileNotFoundException {
+    public ArrayList<String> showFiles (String directoryPath) throws FileNotFoundException {
         File dicPath = new File(directoryPath);
-
+        ArrayList<String> filesWValidate = new ArrayList<>();
         //Función override obtiene el nombre de los subdirectorios (Convertida a notación lambda)
         String[] directories = dicPath.list((current, name) -> new File(current, name).isDirectory());
         for(int i = 0; i<directories.length; i++)
@@ -52,6 +51,7 @@ public class FileManager {
                 }
             }
         }
+        return filesWValidate;
     }
 
     public String validateFile(String filePath) throws FileNotFoundException {
@@ -72,7 +72,7 @@ public class FileManager {
         sc.useDelimiter("\\Z");
         return sc.next();
     }
-    public void createMap(String text, String[] stop)
+    public Map<String,Integer> createMap(String text, String[] stop)
     {
 
         String[] lineas = text.split("\n");
@@ -118,11 +118,10 @@ public class FileManager {
                 }
             }
         }
-        ArrayList<String> llaves = new ArrayList<>(diccionario.keySet());
-        Collections.sort(llaves, String.CASE_INSENSITIVE_ORDER);
-        for(String termino : llaves){
-            System.out.println(termino+": "+diccionario.get(termino));
-        }
+        Map<String, Integer> treeMap = new TreeMap<String,Integer>(diccionario);
+
+        return treeMap;
+
     }
 
     public String quitarNonWords(String palabra){

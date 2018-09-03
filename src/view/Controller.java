@@ -1,5 +1,6 @@
 package view;
 
+import domain.FileManager;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -13,6 +14,9 @@ import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.Map;
 
 public class Controller {
     @FXML
@@ -75,11 +79,41 @@ public class Controller {
             });
         }
         btoIniciar.setOnAction(event -> {
-            System.out.println(txtColeccion.getText());
-            System.out.println(txtIndice.getText());
-            System.out.println(txtStopwords.getText());
-            if(rdTfidf.isSelected()) System.out.println(rdTfidf.getText());
-            else System.out.println(rdBm25.getText());
+            String pathColeccion = txtColeccion.getText();
+            String pathIndice = txtIndice.getText();
+            String pathStopwords = txtStopwords.getText();
+            String consulta = txtConsulta.getText();
+            String[] stopwords;
+            ArrayList<String> files = new ArrayList<>();
+            FileManager fileManager = new FileManager();
+            if(!pathColeccion.isEmpty() && !pathIndice.isEmpty() && !pathStopwords.isEmpty() && !consulta.isEmpty()){
+                try {
+                    files = fileManager.showFiles(pathColeccion);
+                    String stopw = fileManager.getTextFile(pathStopwords);
+                    stopwords = stopw.split(",");
+                }catch (FileNotFoundException f) {
+                    f.printStackTrace();
+                    System.out.println(" SGHIT");
+                    return;
+                }
+                for(String f: files){
+                    try{
+                        String text = fileManager.getTextFile(f);
+                        text.replace("@","");
+                        Map<String,Integer> terminosArchivo = fileManager.createMap(text,stopwords);
+                        String nombre = f.substring(f.lastIndexOf('\\'),f.length()-1);
+                        fileManager.saveMap(terminosArchivo,pathIndice+nombre);
+
+                    }catch (FileNotFoundException fe){
+                        fe.printStackTrace();
+                        System.out.println(f + " FUCCKKKKK");
+                        return;
+                    }
+                }
+                Map<String,Integer> consultaIndex = fileManager.createMap(consulta,stopwords);
+                System.out.println(consultaIndex.keySet().toString());
+            }
+
         });
 
     }
