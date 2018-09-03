@@ -6,6 +6,10 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.*;
+
 public class Main extends Application {
 
     @Override
@@ -17,10 +21,11 @@ public class Main extends Application {
     }
 
 
-    public static void main(String[] args) {
+    public static void main(String[] args)throws FileNotFoundException {
 
         FileManager test = new FileManager();
-        test.showFiles("C:\\Users\\Joseph Salas\\Desktop\\TEC\\VI Semestre\\Información Textual\\Tarea programada 1\\man-es");
+      //  test.showFiles("C:\\Users\\Joseph Salas\\Desktop\\TEC\\VI Semestre\\Información Textual\\Tarea programada 1\\man-es");
+        test.createMap();
         //launch(args);
     }
 }

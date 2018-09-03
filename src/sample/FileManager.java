@@ -1,9 +1,16 @@
 package sample;
 
+import com.sun.deploy.util.StringUtils;
+
 import java.io.File;
+
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.io.FileNotFoundException;
+import java.io.FilenameFilter;
+import java.util.*;
+
 
 public class FileManager {
 
@@ -42,8 +49,7 @@ public class FileManager {
         }
     }
 
-    public void validateFiles(File[] listOfFiles)
-    {
+    public void validateFiles(File[] listOfFiles) throws FileNotFoundException {
         Pattern fileExtnPtrn = Pattern.compile("([^\\s]+(\\.(?i)(1|2|3|4|5|6|7|8))$)");
         File[] subDirPathTemp = listOfFiles;
         int sizeTemp = listOfFiles.length;
@@ -55,5 +61,77 @@ public class FileManager {
 
             }
         }
+    }
+
+    public void createMap() throws FileNotFoundException
+    {
+        File file = new File("C:\\Users\\iworth\\iCloudDrive\\Documents\\TEC\\Semestre II 2018\\Recuperacion textual\\Proyecto\\Tarea programada 1\\man-es\\man2\\accept.2");
+        Scanner sc = new Scanner(file);
+
+        sc.useDelimiter("\\Z");
+        String texto = sc.next();
+        String[] lineas = texto.split("\n");
+        texto = "";
+        for(String linea: lineas){
+            linea = linea.trim();
+            String[] words = linea.split(" ");
+            if(words.length>0 && !words[0].equals(".\\\"")) {
+                if(words[0].startsWith(".") && words[0].length()<4){
+                    for(int i=1;i<words.length;i++){
+                        texto+=(words[i]+" ");
+                    }
+                }
+                else
+                    texto+=linea+" ";
+            }
+        }
+        texto = texto.substring(0,texto.length()-1).toLowerCase();
+        String[] palabras;
+        texto = texto.replace("\t"," ").replace("á","a")
+                .replace("é","e").replace("í","i")
+                .replace("ó","o").replace("ú","u").replace("\\-\\-","@")
+                .replaceAll("[(){}_,!`~#$%^&*/\'\"+<>?:;|\\-]"," ");
+        palabras = texto.split(" ");
+        for(int i=0;i<palabras.length;i++){
+            palabras[i]= quitarNonWords(palabras[i]);
+        }
+
+        String[] stop = {"a","ante","bajo","cabe","con","contra","de","desde","e","el","en","entre","hacia","hasta","ni","la","le","lo","los","las","o","para","pero","por","que","segun","sin","so","uno","unas","unos","y","sobre","tras","u","un","una"};
+        ArrayList<String> stopWords = new ArrayList<>(Arrays.asList(stop));
+        ArrayList<String> terminos = new ArrayList<>(Arrays.asList(palabras));
+        for(String palabra : stopWords){
+            while(terminos.remove(palabra));
+        }
+
+        Map<String,Integer> diccionario = new HashMap<String,Integer>();
+        for(int e=0;e<terminos.size();e++){
+            String tmp = terminos.get(e);
+            if(!tmp.equals("")){
+                if(diccionario.containsKey(tmp)){
+                    diccionario.put(tmp,diccionario.get(tmp)+1);
+                }else{
+                    diccionario.put(tmp,1);
+                }
+            }
+        }
+        ArrayList<String> llaves = new ArrayList<>(diccionario.keySet());
+        Collections.sort(llaves, String.CASE_INSENSITIVE_ORDER);
+        for(String termino : llaves){
+            System.out.println(termino+": "+diccionario.get(termino));
+        }
+    }
+
+    public String quitarNonWords(String palabra){
+        String[] tmp = palabra.split("\\.");
+        if(palabra.contains(".") && tmp.length==2 && tmp[0].matches("[0-9]+") && tmp[1].matches("[0-9]+")) {
+            return palabra;
+        }
+        else if(palabra.contains("\\f")){
+            return "";
+        }
+        else{
+            return palabra.replaceAll("[\\.\\\\]","");
+        }
+
     }
 }
