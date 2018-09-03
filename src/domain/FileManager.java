@@ -14,13 +14,13 @@ public class FileManager {
 
     //ArrayList que va a contener los path de los subdirectorios
     private ArrayList<String> subDirPath = new ArrayList<>();
+    private ArrayList<String> filesWValidate = new ArrayList<>();
 
     public FileManager() {
     }
 
     //Funcion que muerta los archivos por subdirectorio
-    public void showFiles (String directoryPath)
-    {
+    public void showFiles (String directoryPath) throws FileNotFoundException {
         File dicPath = new File(directoryPath);
 
         //Función override obtiene el nombre de los subdirectorios (Convertida a notación lambda)
@@ -41,25 +41,30 @@ public class FileManager {
             {
                 if (file.isFile())
                 {
-                    System.out.println(file.getName());
+                    String validate =   validateFile(file.getName());
+                    if(!validate.isEmpty())
+                    {
+                        filesWValidate.add(validate);
+                    }
+
+                    //System.out.println(file.getName());
+
                 }
             }
         }
     }
 
-    public void validateFiles(File[] listOfFiles) throws FileNotFoundException {
+    public String validateFile(String filePath) throws FileNotFoundException {
         Pattern fileExtnPtrn = Pattern.compile("([^\\s]+(\\.(?i)(1|2|3|4|5|6|7|8))$)");
-        File[] subDirPathTemp = listOfFiles;
-        int sizeTemp = listOfFiles.length;
-        for(int i = 0; i< sizeTemp; i++)
-        {
-            Matcher mtch = fileExtnPtrn.matcher(listOfFiles[i].getName());
+            Matcher mtch = fileExtnPtrn.matcher(filePath);
             if(!mtch.matches())
             {
+                return filePath;
 
             }
-        }
+            else return  "";
     }
+
     public String getTextFile(String path)throws FileNotFoundException{
         File file = new File(path);
         Scanner sc = new Scanner(file);
