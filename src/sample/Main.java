@@ -16,7 +16,7 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception{
         Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
         primaryStage.setTitle("Hola joseph");
-        primaryStage.setScene(new Scene(root, 300, 275));
+        primaryStage.setScene(new Scene(root, 414, 334));
         primaryStage.show();
     }
 
@@ -26,14 +26,14 @@ public class Main extends Application {
         FileManager test = new FileManager();
       //  test.showFiles("C:\\Users\\Joseph Salas\\Desktop\\TEC\\VI Semestre\\Información Textual\\Tarea programada 1\\man-es");
         //test.createMap();
-        //launch(args);
-        Map<String,Integer> hm =new HashMap<String,Integer>();
+        launch(args);
+       /* Map<String,Integer> hm =new HashMap<String,Integer>();
 
         hm.put("Hola",3);
         hm.put("Joseph",4);
         hm.put("Juande",5);
 
-        test.saveMap(hm);
+        test.saveMap(hm);*/
 
 
     }

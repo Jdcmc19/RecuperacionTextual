@@ -121,7 +121,12 @@ public class FileManager {
 
     public String quitarNonWords(String palabra){
         String[] tmp = palabra.split("\\.");
-        if(palabra.contains(".") && tmp.length==2 && tmp[0].matches("[0-9]+") && tmp[1].matches("[0-9]+")) {
+        Boolean si = true;
+        for(String t: tmp){
+            if(!t.matches("[0-9]+"))
+                si=false;
+        }
+        if(palabra.contains(".") && si && tmp.length>=2) {
             return palabra;
         }
         else if(palabra.contains("\\f")){
