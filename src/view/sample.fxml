@@ -33,7 +33,7 @@
             <Button fx:id="btoColeccion" layoutX="369.0" layoutY="83.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="27.0" text="..." />
             <Button fx:id="btoIndice" layoutX="369.0" layoutY="115.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="27.0" text="..." />
             <Label layoutX="52.0" layoutY="146.0" prefHeight="25.0" prefWidth="77.0" text="Consulta:" />
-            <TextField fx:id="txtConsulta" layoutX="128.0" layoutY="146.0" prefHeight="25.0" prefWidth="268.0" promptText="Digite el exto a buscar." text="hAola @ayEda hélp cAño " />
+            <TextField fx:id="txtConsulta" layoutX="128.0" layoutY="146.0" prefHeight="25.0" prefWidth="268.0" promptText="Digite el exto a buscar." text="hAola @ayEda hélp cAño 3.1 3.h q.p" />
          </children>
       </Pane>
    </children>

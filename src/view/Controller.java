@@ -91,6 +91,7 @@ public class Controller {
                     files = fileManager.showFiles(pathColeccion);
                     String stopw = fileManager.getTextFile(pathStopwords);
                     stopwords = stopw.split(",");
+
                 }catch (FileNotFoundException f) {
                     f.printStackTrace();
                     System.out.println(" SGHIT");
@@ -103,15 +104,18 @@ public class Controller {
                         Map<String,Integer> terminosArchivo = fileManager.createMap(text,stopwords);
                         String nombre = f.substring(f.lastIndexOf('\\'),f.length()-1);
                         fileManager.saveMap(terminosArchivo,pathIndice+nombre);
-
                     }catch (FileNotFoundException fe){
                         fe.printStackTrace();
                         System.out.println(f + " FUCCKKKKK");
                         return;
                     }
                 }
+
                 Map<String,Integer> consultaIndex = fileManager.createMap(consulta,stopwords);
+                fileManager.saveMap(consultaIndex,pathIndice+"\\consulta");
+
                 System.out.println(consultaIndex.keySet().toString());
+
             }
 
         });

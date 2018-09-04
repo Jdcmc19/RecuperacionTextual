@@ -43,7 +43,7 @@ public class FileManager {
                     String validate =   validateFile(file.getName());
                     if(!validate.isEmpty())
                     {
-                        filesWValidate.add(validate);
+                        filesWValidate.add(subDirPath.get(y)+"\\"+validate);
                     }
 
                     //System.out.println(file.getName());
@@ -57,7 +57,7 @@ public class FileManager {
     public String validateFile(String filePath) throws FileNotFoundException {
         Pattern fileExtnPtrn = Pattern.compile("([^\\s]+(\\.(?i)(1|2|3|4|5|6|7|8))$)");
             Matcher mtch = fileExtnPtrn.matcher(filePath);
-            if(!mtch.matches())
+            if(mtch.matches())
             {
                 return filePath;
 
@@ -95,19 +95,23 @@ public class FileManager {
         texto = texto.replace("\t"," ").replace("á","a")
                 .replace("é","e").replace("í","i")
                 .replace("ó","o").replace("ú","u").replace("\\-\\-","@")
-                .replaceAll("[(){}_,!`~#$%^&*/\'\"+<>?:;|\\-]"," ");
+                .replaceAll("[(){}_,!×`¿=\\[\\]~¡#$%º^&*/\'\"+<>?:;|\\-]"," ");
         palabras = texto.split(" ");
+        ArrayList<String> terminos = new ArrayList<>();
         for(int i=0;i<palabras.length;i++){
-            palabras[i]= quitarNonWords(palabras[i]);
+            String[] tm = quitarNonWords(palabras[i]);
+            for(String p : tm){
+                terminos.add(p);
+            }
         }
 
         ArrayList<String> stopWords = new ArrayList<>(Arrays.asList(stop));
-        ArrayList<String> terminos = new ArrayList<>(Arrays.asList(palabras));
         for(String palabra : stopWords){
             while(terminos.remove(palabra));
         }
 
-        Map<String,Integer> diccionario = new HashMap<String,Integer>();
+        Map<String,Integer> diccionario = new TreeMap<>();
+
         for(int e=0;e<terminos.size();e++){
             String tmp = terminos.get(e);
             if(!tmp.equals("")){
@@ -118,13 +122,39 @@ public class FileManager {
                 }
             }
         }
-        Map<String, Integer> treeMap = new TreeMap<String,Integer>(diccionario);
+        return diccionario;
 
-        return treeMap;
 
     }
+    /*
+    public void getDiccionarios(String path,ArrayList<String> terminos){
+        System.out.println(terminos.size() + " terminos");
+        for(int e=0;e<terminos.size();e++){
+            System.out.println(terminos.get(e));
+            String tmp = terminos.get(e);
+            if(!tmp.equals("")){
+                if(diccionario.containsKey(tmp)){
+                    ArrayList<VectorialStruct> tt = diccionario.get(tmp);
+                    for (int w=0;w<tt.size();w++){
+                        VectorialStruct vs = tt.get(w);
+                        if(vs.getPath().equals(path)){
+                            vs.setCantidad(vs.getCantidad()+1);
+                            tt.set(w,vs);
+                        }else{
+                            tt.add(new VectorialStruct(path,1));
+                        }
+                    }
+                }else{
+                    ArrayList<VectorialStruct> oo = new ArrayList<>();
+                    oo.add(new VectorialStruct(path,1));
+                    diccionario.put(tmp,oo);
+                }
+            }
+        }
+        System.out.println("ternminar for");
+    }*/
 
-    public String quitarNonWords(String palabra){
+    public String[] quitarNonWords(String palabra){
         String[] tmp = palabra.split("\\.");
         Boolean si = true;
         for(String t: tmp){
@@ -132,19 +162,20 @@ public class FileManager {
                 si=false;
         }
         if(palabra.contains(".") && si && tmp.length>=2) {
-            return palabra;
+            return palabra.split(" ");
         }
         else if(palabra.contains("\\f")){
-            return "";
+            return "".split("");
         }
         else{
-            return palabra.replaceAll("[\\.\\\\]","");
+            palabra = palabra.replace("\\","");
+            return palabra.split("\\.");
         }
 
     }
 
 
-    public void saveMap(Map<String,Integer> map,String path)
+    public void saveMap(Map<String, Integer> map,String path)
     {
         try{
             File fileOne=new File(path);
@@ -159,14 +190,37 @@ public class FileManager {
             e.printStackTrace();
         }
     }
-    public void readMap(String path){
+
+    /*public void readDiccionario(String path){
         //read from file
         try{
             File toRead=new File(path);
             FileInputStream fis=new FileInputStream(toRead);
             ObjectInputStream ois=new ObjectInputStream(fis);
 
-            HashMap<String,Integer> mapInFile=(HashMap<String,Integer>)ois.readObject();
+            TreeMap<String,ArrayList<VectorialStruct>> mapInFile=(TreeMap<String,ArrayList<VectorialStruct>>)ois.readObject();
+
+            ois.close();
+            fis.close();
+            //print All data in MAP
+            for(Map.Entry<String,ArrayList<VectorialStruct>> m :mapInFile.entrySet()){
+                for(int i=0;i<m.getValue().size();i++){
+                    System.out.println(m.getKey()+" : "+m.getValue().get(i).getPath() + " : " + m.getValue().get(i).getCantidad());
+                }
+
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }*/
+        public void readMap(String path){
+        //read from file
+        try{
+            File toRead=new File(path);
+            FileInputStream fis=new FileInputStream(toRead);
+            ObjectInputStream ois=new ObjectInputStream(fis);
+
+            TreeMap<String,Integer> mapInFile=(TreeMap<String,Integer>)ois.readObject();
 
             ois.close();
             fis.close();
