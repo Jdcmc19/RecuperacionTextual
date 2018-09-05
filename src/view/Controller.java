@@ -1,6 +1,7 @@
 package view;
 
 import domain.FileManager;
+import domain.VectorialStruct;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -17,6 +18,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.TreeMap;
 
 public class Controller {
     @FXML
@@ -84,7 +86,8 @@ public class Controller {
             String pathStopwords = txtStopwords.getText();
             String consulta = txtConsulta.getText();
             String[] stopwords;
-            ArrayList<String> files = new ArrayList<>();
+            ArrayList<String> files;
+            Map<String, ArrayList<VectorialStruct>> dicGeneral = new TreeMap<>();
             FileManager fileManager = new FileManager();
             if(!pathColeccion.isEmpty() && !pathIndice.isEmpty() && !pathStopwords.isEmpty() && !consulta.isEmpty()){
                 try {
@@ -101,9 +104,12 @@ public class Controller {
                     try{
                         String text = fileManager.getTextFile(f);
                         text.replace("@","");
-                        Map<String,Integer> terminosArchivo = fileManager.createMap(text,stopwords);
-                        String nombre = f.substring(f.lastIndexOf('\\'),f.length()-1);
-                        fileManager.saveMap(terminosArchivo,pathIndice+nombre);
+
+
+                        String path = pathIndice+f.substring(f.lastIndexOf('\\'),f.length()-1);
+                        System.out.println(path);
+                        dicGeneral = fileManager.createMap(text,stopwords,dicGeneral,path);
+                      //  fileManager.saveMap(terminosArchivo,pathIndice+nombre);
                     }catch (FileNotFoundException fe){
                         fe.printStackTrace();
                         System.out.println(f + " FUCCKKKKK");
@@ -111,10 +117,11 @@ public class Controller {
                     }
                 }
 
-                Map<String,Integer> consultaIndex = fileManager.createMap(consulta,stopwords);
+               /* Map<String,Integer> consultaIndex = fileManager.createMap(consulta,stopwords);
                 fileManager.saveMap(consultaIndex,pathIndice+"\\consulta");
 
-                System.out.println(consultaIndex.keySet().toString());
+                System.out.println(consultaIndex.keySet().toString());*/
+                System.out.println(dicGeneral.keySet().toString());
 
             }
 

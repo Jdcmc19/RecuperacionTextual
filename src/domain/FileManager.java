@@ -1,6 +1,7 @@
 package domain;
 
 import com.sun.deploy.util.StringUtils;
+import javafx.scene.control.cell.MapValueFactory;
 
 import java.io.*;
 
@@ -72,7 +73,7 @@ public class FileManager {
         sc.useDelimiter("\\Z");
         return sc.next();
     }
-    public Map<String,Integer> createMap(String text, String[] stop)
+    public Map<String,ArrayList<VectorialStruct>> createMap(String text, String[] stop, Map<String,ArrayList<VectorialStruct>> dicGen, String path)
     {
 
         String[] lineas = text.split("\n");
@@ -94,8 +95,8 @@ public class FileManager {
         String[] palabras;
         texto = texto.replace("\t"," ").replace("á","a")
                 .replace("é","e").replace("í","i")
-                .replace("ó","o").replace("ú","u").replace("\\-\\-","@")
-                .replaceAll("[(){}_,!×`¿=\\[\\]~¡#$%º^&*/\'\"+<>?:;|\\-]"," ");
+                .replace("ó","o").replace("ú","u");
+               // .replaceAll("[(){}_,!×`¿=\\[\\]~¡#¬$%º^&«*/\'\"<>?:;|]"," ");
         palabras = texto.split(" ");
         ArrayList<String> terminos = new ArrayList<>();
         for(int i=0;i<palabras.length;i++){
@@ -110,19 +111,23 @@ public class FileManager {
             while(terminos.remove(palabra));
         }
 
-        Map<String,Integer> diccionario = new TreeMap<>();
-
+        ArrayList<VectorialStruct> tt;
         for(int e=0;e<terminos.size();e++){
             String tmp = terminos.get(e);
             if(!tmp.equals("")){
-                if(diccionario.containsKey(tmp)){
-                    diccionario.put(tmp,diccionario.get(tmp)+1);
+                if(dicGen.containsKey(tmp)){
+                    tt = dicGen.get(tmp);
+                    tt.add(new VectorialStruct(path,1));
+                    dicGen.put(tmp,tt);
                 }else{
-                    diccionario.put(tmp,1);
+                    tt = new ArrayList<>();
+                    tt.add(new VectorialStruct(path,1));
+                    dicGen.put(tmp,tt);
                 }
             }
         }
-        return diccionario;
+
+        return dicGen;
 
 
     }
@@ -164,12 +169,25 @@ public class FileManager {
         if(palabra.contains(".") && si && tmp.length>=2) {
             return palabra.split(" ");
         }
-        else if(palabra.contains("\\f")){
-            return "".split("");
+        else if(palabra.startsWith("\\f")){
+            String[] h = palabra.split("");
+            if(h.length>2 && h[2].matches("[\\w]")){
+                palabra=palabra.substring(3,palabra.length());
+
+            }
+            palabra = palabra.replaceAll("[\\W]"," ");
+            return palabra.split(" ");
+
+        }
+        else if(palabra.startsWith("\\-\\-")){
+            palabra = palabra.replaceAll("[\\W]"," ");
+            palabra = palabra.trim();
+            palabra = "@"+palabra;
+            return palabra.split(" ");
         }
         else{
-            palabra = palabra.replace("\\","");
-            return palabra.split("\\.");
+            palabra = palabra.replaceAll("[\\W]"," ");
+            return palabra.split(" ");
         }
 
     }
