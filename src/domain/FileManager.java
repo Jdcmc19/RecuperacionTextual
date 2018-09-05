@@ -47,8 +47,6 @@ public class FileManager {
                         filesWValidate.add(subDirPath.get(y)+"\\"+validate);
                     }
 
-                    //System.out.println(file.getName());
-
                 }
             }
         }
@@ -73,7 +71,7 @@ public class FileManager {
         sc.useDelimiter("\\Z");
         return sc.next();
     }
-    public Map<String,ArrayList<VectorialStruct>> createMap(String text, String[] stop, Map<String,ArrayList<VectorialStruct>> dicGen, String path)
+    public ArrayList<String> createMap(String text, String[] stop,boolean type)
     {
 
         String[] lineas = text.split("\n");
@@ -100,7 +98,7 @@ public class FileManager {
         palabras = texto.split(" ");
         ArrayList<String> terminos = new ArrayList<>();
         for(int i=0;i<palabras.length;i++){
-            String[] tm = quitarNonWords(palabras[i]);
+            String[] tm = quitarNonWords(palabras[i],type);
             for(String p : tm){
                 terminos.add(p);
             }
@@ -111,13 +109,42 @@ public class FileManager {
             while(terminos.remove(palabra));
         }
 
+        return  terminos;
+
+
+
+    }
+    public  Map<String,Integer>  getDiccionarioConsulta(ArrayList<String> terminos){
+        Map<String,Integer> dicCon = new TreeMap<>();
+        for(int e=0;e<terminos.size();e++){
+            String tmp = terminos.get(e);
+            if(!tmp.equals("")){
+                if(dicCon.containsKey(tmp)){
+                    dicCon.put(tmp,dicCon.get(tmp)+1);
+                }else{
+                    dicCon.put(tmp,1);
+                }
+            }
+        }
+
+        return dicCon;
+    }
+    public  Map<String, ArrayList<VectorialStruct>>  getDiccionarioGeneral(String path,ArrayList<String> terminos, Map<String, ArrayList<VectorialStruct>> dicGen){
         ArrayList<VectorialStruct> tt;
         for(int e=0;e<terminos.size();e++){
             String tmp = terminos.get(e);
             if(!tmp.equals("")){
                 if(dicGen.containsKey(tmp)){
                     tt = dicGen.get(tmp);
-                    tt.add(new VectorialStruct(path,1));
+                    int pb = -1;
+                    for(int i=0;i<tt.size();i++){
+                        if(tt.get(i).getPath().equals(path))
+                            pb=i;
+                    }
+                    if(pb<0)tt.add(new VectorialStruct(path,1));
+                    else{
+                        tt.set(pb,new VectorialStruct(path,tt.get(pb).getCantidad()+1));
+                    }
                     dicGen.put(tmp,tt);
                 }else{
                     tt = new ArrayList<>();
@@ -128,38 +155,10 @@ public class FileManager {
         }
 
         return dicGen;
-
-
     }
-    /*
-    public void getDiccionarios(String path,ArrayList<String> terminos){
-        System.out.println(terminos.size() + " terminos");
-        for(int e=0;e<terminos.size();e++){
-            System.out.println(terminos.get(e));
-            String tmp = terminos.get(e);
-            if(!tmp.equals("")){
-                if(diccionario.containsKey(tmp)){
-                    ArrayList<VectorialStruct> tt = diccionario.get(tmp);
-                    for (int w=0;w<tt.size();w++){
-                        VectorialStruct vs = tt.get(w);
-                        if(vs.getPath().equals(path)){
-                            vs.setCantidad(vs.getCantidad()+1);
-                            tt.set(w,vs);
-                        }else{
-                            tt.add(new VectorialStruct(path,1));
-                        }
-                    }
-                }else{
-                    ArrayList<VectorialStruct> oo = new ArrayList<>();
-                    oo.add(new VectorialStruct(path,1));
-                    diccionario.put(tmp,oo);
-                }
-            }
-        }
-        System.out.println("ternminar for");
-    }*/
 
-    public String[] quitarNonWords(String palabra){
+    public String[] quitarNonWords(String palabra, boolean type){
+        palabra = palabra.replace("_","");
         String[] tmp = palabra.split("\\.");
         Boolean si = true;
         for(String t: tmp){
@@ -175,25 +174,39 @@ public class FileManager {
                 palabra=palabra.substring(3,palabra.length());
 
             }
+            if(palabra.contains("ñ"))palabra=palabra.replace("ñ","_");
             palabra = palabra.replaceAll("[\\W]"," ");
+            palabra = palabra.replace("_","ñ");
             return palabra.split(" ");
 
         }
-        else if(palabra.startsWith("\\-\\-")){
+        else if(palabra.startsWith("\\-\\-") && type){
+            if(palabra.contains("ñ"))palabra=palabra.replace("ñ","_");
             palabra = palabra.replaceAll("[\\W]"," ");
+            palabra = palabra.replace("_","ñ");
             palabra = palabra.trim();
             palabra = "@"+palabra;
             return palabra.split(" ");
         }
-        else{
+        else if(palabra.startsWith("@") && !type){
+            palabra = palabra.replace("@","__");
+            if(palabra.contains("ñ"))palabra=palabra.replace("ñ","_");
             palabra = palabra.replaceAll("[\\W]"," ");
+            palabra = palabra.replace("__","@").replace("_","ñ");
+            palabra = palabra.trim();
+            return palabra.split(" ");
+        }
+        else{
+            if(palabra.contains("ñ"))palabra=palabra.replace("ñ","_");
+            palabra = palabra.replaceAll("[\\W]"," ");
+            palabra = palabra.replace("_","ñ");
             return palabra.split(" ");
         }
 
     }
 
 
-    public void saveMap(Map<String, Integer> map,String path)
+    public void saveConsulta(Map<String, Integer> map,String path)
     {
         try{
             File fileOne=new File(path);
@@ -208,8 +221,40 @@ public class FileManager {
             e.printStackTrace();
         }
     }
+    public void saveDiccionario(Map<String, ArrayList<VectorialStruct>> map,String path)
+    {
+        try{
+            File fileOne=new File(path);
+            FileOutputStream fos=new FileOutputStream(fileOne);
+            ObjectOutputStream oos=new ObjectOutputStream(fos);
 
-    /*public void readDiccionario(String path){
+            oos.writeObject(map);
+            oos.flush();
+            oos.close();
+            fos.close();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+    public void printDiccionarioGeneral(TreeMap<String,ArrayList<VectorialStruct>> p ){
+        ArrayList<String> aaa = new ArrayList<>(p.keySet());
+        int cont = 0;
+        for(String m : aaa){
+            cont++;
+            for(VectorialStruct vs : p.get(m)) {
+                if(cont<2000)System.out.println(m + " : " + vs.getPath() + " : " + vs.getCantidad());
+            }
+        }
+
+    }
+    public void printDiccionarioConsulta(Map<String,Integer> p ){
+        ArrayList<String> aaa = new ArrayList<>(p.keySet());
+        for(String m : aaa){
+            System.out.println(m+" : "+p.get(m));
+        }
+
+    }
+    public TreeMap<String,ArrayList<VectorialStruct>> readDiccionarioGeneral(String path){
         //read from file
         try{
             File toRead=new File(path);
@@ -221,17 +266,15 @@ public class FileManager {
             ois.close();
             fis.close();
             //print All data in MAP
-            for(Map.Entry<String,ArrayList<VectorialStruct>> m :mapInFile.entrySet()){
-                for(int i=0;i<m.getValue().size();i++){
-                    System.out.println(m.getKey()+" : "+m.getValue().get(i).getPath() + " : " + m.getValue().get(i).getCantidad());
-                }
 
-            }
+            return mapInFile;
         }catch(Exception e){
             e.printStackTrace();
         }
-    }*/
-        public void readMap(String path){
+        return null;
+
+    }
+        public TreeMap<String,Integer> readConsulta(String path){
         //read from file
         try{
             File toRead=new File(path);
@@ -243,12 +286,11 @@ public class FileManager {
             ois.close();
             fis.close();
             //print All data in MAP
-            for(Map.Entry<String,Integer> m :mapInFile.entrySet()){
-                System.out.println(m.getKey()+" : "+m.getValue());
-            }
+            return mapInFile;
         }catch(Exception e){
             e.printStackTrace();
         }
+        return null;
     }
 
 }

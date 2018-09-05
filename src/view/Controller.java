@@ -100,16 +100,17 @@ public class Controller {
                     System.out.println(" SGHIT");
                     return;
                 }
+                ArrayList<String> terminos;
                 for(String f: files){
                     try{
                         String text = fileManager.getTextFile(f);
                         text.replace("@","");
 
 
-                        String path = pathIndice+f.substring(f.lastIndexOf('\\'),f.length()-1);
+                        String path = pathColeccion+f.substring(f.lastIndexOf('\\'),f.length()-1);
                         System.out.println(path);
-                        dicGeneral = fileManager.createMap(text,stopwords,dicGeneral,path);
-                      //  fileManager.saveMap(terminosArchivo,pathIndice+nombre);
+                        terminos = fileManager.createMap(text,stopwords,true);
+                        dicGeneral = fileManager.getDiccionarioGeneral(path,terminos,dicGeneral);
                     }catch (FileNotFoundException fe){
                         fe.printStackTrace();
                         System.out.println(f + " FUCCKKKKK");
@@ -117,11 +118,14 @@ public class Controller {
                     }
                 }
 
-               /* Map<String,Integer> consultaIndex = fileManager.createMap(consulta,stopwords);
-                fileManager.saveMap(consultaIndex,pathIndice+"\\consulta");
+                terminos = fileManager.createMap(consulta,stopwords,false);
+                Map<String,Integer> dicCons = new TreeMap<>();
+                System.out.println(terminos.toString());
+                dicCons = fileManager.getDiccionarioConsulta(terminos);
 
-                System.out.println(consultaIndex.keySet().toString());*/
-                System.out.println(dicGeneral.keySet().toString());
+                fileManager.saveDiccionario(dicGeneral,pathIndice+"\\DiccionarioGeneral");
+                fileManager.saveConsulta(dicCons,pathIndice+"\\DiccionarioConsulta");
+
 
             }
 
