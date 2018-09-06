@@ -221,13 +221,16 @@ public class FileManager {
             e.printStackTrace();
         }
     }
-    public void saveDiccionario(Map<String, ArrayList<VectorialStruct>> map,String path)
+    public void saveDiccionario(Map<String, ArrayList<VectorialStruct>> map,String path, int cantFiles)
     {
         try{
             File fileOne=new File(path);
             FileOutputStream fos=new FileOutputStream(fileOne);
             ObjectOutputStream oos=new ObjectOutputStream(fos);
+            ArrayList<VectorialStruct> vs = new ArrayList<VectorialStruct>();
+            vs.add(new VectorialStruct("!",cantFiles));
 
+            map.put("!",vs);
             oos.writeObject(map);
             oos.flush();
             oos.close();

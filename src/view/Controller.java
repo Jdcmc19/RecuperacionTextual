@@ -86,12 +86,14 @@ public class Controller {
             String pathStopwords = txtStopwords.getText();
             String consulta = txtConsulta.getText();
             String[] stopwords;
+            int cantFiles=0;
             ArrayList<String> files;
             Map<String, ArrayList<VectorialStruct>> dicGeneral = new TreeMap<>();
             FileManager fileManager = new FileManager();
             if(!pathColeccion.isEmpty() && !pathIndice.isEmpty() && !pathStopwords.isEmpty() && !consulta.isEmpty()){
                 try {
                     files = fileManager.showFiles(pathColeccion);
+                    cantFiles = files.size();
                     String stopw = fileManager.getTextFile(pathStopwords);
                     stopwords = stopw.split(",");
 
@@ -123,7 +125,7 @@ public class Controller {
                 System.out.println(terminos.toString());
                 dicCons = fileManager.getDiccionarioConsulta(terminos);
 
-                fileManager.saveDiccionario(dicGeneral,pathIndice+"\\DiccionarioGeneral");
+                fileManager.saveDiccionario(dicGeneral,pathIndice+"\\DiccionarioGeneral",cantFiles);
                 fileManager.saveConsulta(dicCons,pathIndice+"\\DiccionarioConsulta");
 
 
