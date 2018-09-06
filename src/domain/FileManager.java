@@ -239,7 +239,7 @@ public class FileManager {
             e.printStackTrace();
         }
     }
-    public void printDiccionarioGeneral(TreeMap<String,ArrayList<VectorialStruct>> p ){
+    public void printDiccionarioGeneral(Map<String,ArrayList<VectorialStruct>> p ){
         ArrayList<String> aaa = new ArrayList<>(p.keySet());
         int cont = 0;
         for(String m : aaa){

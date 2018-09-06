@@ -1,6 +1,7 @@
 package view;
 
 import domain.FileManager;
+import domain.TFIDF;
 import domain.VectorialStruct;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -110,7 +111,7 @@ public class Controller {
 
 
                         String path = pathColeccion+f.substring(f.lastIndexOf('\\'),f.length()-1);
-                        System.out.println(path);
+                       // System.out.println(path);
                         terminos = fileManager.createMap(text,stopwords,true);
                         dicGeneral = fileManager.getDiccionarioGeneral(path,terminos,dicGeneral);
                     }catch (FileNotFoundException fe){
@@ -127,6 +128,10 @@ public class Controller {
 
                 fileManager.saveDiccionario(dicGeneral,pathIndice+"\\DiccionarioGeneral",cantFiles);
                 fileManager.saveConsulta(dicCons,pathIndice+"\\DiccionarioConsulta");
+                TFIDF tfidf = new TFIDF(dicGeneral,dicCons,cantFiles);
+                tfidf.normalizarWij();
+
+
 
 
             }

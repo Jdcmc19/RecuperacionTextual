@@ -40,7 +40,7 @@ public class Main extends Application {
         test.saveMap(hm);*/
        // test.readMap("C:\\Users\\iworth\\iCloudDrive\\Desktop\\prueba\\bootparam");
        // test.printDiccionarioGeneral(test.readDiccionarioGeneral("C:\\Users\\iworth\\iCloudDrive\\Desktop\\DiccionarioGeneral"));
-        test.printDiccionarioConsulta(test.readConsulta("C:\\Users\\iworth\\iCloudDrive\\Desktop\\DiccionarioConsulta"));
+        //test.printDiccionarioConsulta(test.readConsulta("C:\\Users\\iworth\\iCloudDrive\\Desktop\\DiccionarioConsulta"));
 
     }
 }
