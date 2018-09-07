@@ -35,6 +35,8 @@ public class Main extends Application {
 
         test.saveMap(hm);*/
 
+       test.showFiles("C:\\Users\\Joseph Salas\\Desktop\\TEC\\VI Semestre\\Información Textual\\Tarea programada 1\\man-es");
+
 
     }
 }

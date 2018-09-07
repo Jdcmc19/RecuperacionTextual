@@ -51,13 +51,17 @@ public class FileManager {
                 }
             }
         }
+        for (int i = 0; i < filesWValidate.size(); i++)
+        {
+            System.out.println(filesWValidate.get(i).toString());
+        }
         return filesWValidate;
     }
 
     public String validateFile(String filePath) throws FileNotFoundException {
         Pattern fileExtnPtrn = Pattern.compile("([^\\s]+(\\.(?i)(1|2|3|4|5|6|7|8))$)");
             Matcher mtch = fileExtnPtrn.matcher(filePath);
-            if(!mtch.matches())
+            if(mtch.matches())
             {
                 return filePath;
 
