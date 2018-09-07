@@ -1,18 +1,17 @@
 package domain;
 
 import java.lang.reflect.MalformedParameterizedTypeException;
-import java.util.ArrayList;
-import java.util.Map;
+import java.util.*;
 import java.lang.Math;
-import java.util.TreeMap;
-import java.util.Vector;
 
 public class TFIDF {
     private int N;
-    private Map<String, ArrayList<VectorialStruct>> diccionarioGeneral = new TreeMap<>();
+    private Map<String, ArrayList<VectorialStruct>> diccionarioGeneral;
     private Map<String, ArrayList<VectorialStruct>> diccionarioArchivos = new TreeMap<>();
-    private Map<String, Integer>  diccionarioConsulta = new TreeMap<>();
+    private Map<String, Integer>  diccionarioConsulta;
     private Map<String,ArrayList<Map<String,Double>>> wijCalculada = new TreeMap<>();
+    private Map<String, Double> wijConsulta = new TreeMap<>();
+    private ArrayList<Rank> ranking = new ArrayList<>();
 
     public TFIDF(String path) {
         FileManager fm = new FileManager();
@@ -56,6 +55,21 @@ public class TFIDF {
         }
         return 0.0;
     }
+    public Double getWijConsulta(String word){
+        ArrayList<VectorialStruct> pb;
+        if (this.diccionarioGeneral.containsKey(word)){
+            pb = new ArrayList<VectorialStruct>(this.diccionarioGeneral.get(word));
+            int freq = this.diccionarioConsulta.get(word);
+            int ni = pb.size();
+            if(ni!=0 && freq!=0){
+                return getTF(freq)*getIDF(ni);
+            }else
+                return 0.0;
+        }
+        else
+            return 0.0;
+
+    }
     public Map<String,Double> getNormas(){
         Map<String,Double> map = new TreeMap<>();
         for(String path : this.diccionarioArchivos.keySet()){
@@ -81,6 +95,29 @@ public class TFIDF {
         }
         return map;
     }
+    public Double getNormaConsulta(){
+        Double norma = 0.0;
+        for(String word: this.diccionarioConsulta.keySet()){
+            Double value = getWijConsulta(word);
+            wijConsulta.put(word,value);
+            norma+=Math.pow(value,2);
+        }
+        norma = Math.sqrt(norma);
+        return norma;
+    }
+    public void normalizarConsulta(){
+        Double norma = getNormaConsulta();
+        for(String word : this.diccionarioConsulta.keySet()){
+            Double val = this.wijConsulta.get(word);
+            System.out.println("anterior: "+ val+" norma: "+norma);
+            this.wijConsulta.put(word,val/norma);
+        }
+
+
+        for(String word: this.diccionarioConsulta.keySet()){
+            System.out.println(word+ " : " + this.wijConsulta.get(word));
+        }
+    }
     public void normalizarWij(){
         Map<String,Double> map = getNormas();
         for(String mm : wijCalculada.keySet()){
@@ -94,18 +131,55 @@ public class TFIDF {
                 }
             }
         }
-        System.out.println("****************************************************************************************************");
+    }
+    public void calcularUltimaTabla(){
+        normalizarWij();
+        normalizarConsulta();
+        Map<String,ArrayList<Map<String,Double>>> last = new TreeMap();
         for(String mm : wijCalculada.keySet()){
             for(int i=0;i<wijCalculada.get(mm).size();i++){
                 Map<String,Double> mp = wijCalculada.get(mm).get(i);
-                for(String key:mp.keySet()){
-                    System.out.println("HERE: "+mm+" : "+key+" : "+mp.get(key));
+
+                for(String key:wijConsulta.keySet()){
+                    Double factor2 = wijConsulta.get(key);
+                    Double factor1 = mp.get(key);
+                    Double total;
+                    if(factor2!=null && factor1!=null){
+                        total=factor1*factor2;
+                        Map<String,Double> current = new TreeMap<>();
+                        current.put(key,total);
+                        ArrayList<Map<String,Double>> tmp;
+                        if(last.containsKey(mm)){
+                            tmp = last.get(mm);
+                        }else{
+                            tmp = new ArrayList<>();
+                        }
+
+                        tmp.add(current);
+                        last.put(mm,tmp);
+                    }
+
                 }
             }
         }
-        for(String a:map.keySet()){
-            System.out.println(a+" : "+map.get(a));
+        wijCalculada = last;
+        Double tot =0.0;
+        for(String doc:wijCalculada.keySet()){
+            for(Map<String,Double> map:wijCalculada.get(doc)){
+                for(String word:map.keySet()){
+                    tot+=map.get(word);
+                }
+            }
+            ranking.add(new Rank(doc,tot));
+            tot = 0.0;
         }
+        Collections.sort(ranking);
+
+        for(int i=0;i<ranking.size();i++){
+            Rank d = ranking.get(i);
+            System.out.println(i+" :"+d.toString());
+        }
+
 
     }
     public void getDiccionarioArchivos(){

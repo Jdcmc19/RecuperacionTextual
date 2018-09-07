@@ -104,13 +104,15 @@ public class Controller {
                     return;
                 }
                 ArrayList<String> terminos;
+                System.out.println("CANTIDAD FILES: "+files.size());
                 for(String f: files){
                     try{
+                       // System.out.println(f + " PATH");
                         String text = fileManager.getTextFile(f);
                         text.replace("@","");
 
 
-                        String path = pathColeccion+f.substring(f.lastIndexOf('\\'),f.length()-1);
+                        String path = pathColeccion+f.substring(f.lastIndexOf('\\'),f.length());
                        // System.out.println(path);
                         terminos = fileManager.createMap(text,stopwords,true);
                         dicGeneral = fileManager.getDiccionarioGeneral(path,terminos,dicGeneral);
@@ -123,13 +125,13 @@ public class Controller {
 
                 terminos = fileManager.createMap(consulta,stopwords,false);
                 Map<String,Integer> dicCons = new TreeMap<>();
-                System.out.println(terminos.toString());
+                //System.out.println(terminos.toString());
                 dicCons = fileManager.getDiccionarioConsulta(terminos);
 
                 fileManager.saveDiccionario(dicGeneral,pathIndice+"\\DiccionarioGeneral",cantFiles);
                 fileManager.saveConsulta(dicCons,pathIndice+"\\DiccionarioConsulta");
                 TFIDF tfidf = new TFIDF(dicGeneral,dicCons,cantFiles);
-                tfidf.normalizarWij();
+                tfidf.calcularUltimaTabla();
 
 
 
