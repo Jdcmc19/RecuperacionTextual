@@ -23,8 +23,12 @@ public class Main extends Application {
     public static void main(String[] args)throws FileNotFoundException {
 
         FileManager test = new FileManager();
+
       //  test.showFiles("C:\\Users\\Joseph Salas\\Desktop\\TEC\\VI Semestre\\Información Textual\\Tarea programada 1\\man-es");
         //test.createMap();
+        /*String a = "hóla me llam(oñ j\"\"ua^n de {di})o's!";
+        System.out.println(a);
+        System.out.println(a.replaceAll("[\\W ]",""));*/
         launch(args);
        /* Map<String,Integer> hm =new HashMap<String,Integer>();
         String[] stop = {"a","ante","bajo","cabe","con","contra","de","desde","e","el","en","entre","hacia","hasta","ni","la","le","lo","los","las","o","para","pero","por","que","segun","sin","so","uno","unas","unos","y","sobre","tras","u","un","una"};
@@ -35,7 +39,8 @@ public class Main extends Application {
 
         test.saveMap(hm);*/
 
-       test.showFiles("C:\\Users\\Joseph Salas\\Desktop\\TEC\\VI Semestre\\Información Textual\\Tarea programada 1\\man-es");
+       //test.showFiles("C:\\Users\\Joseph Salas\\Desktop\\TEC\\VI Semestre\\Información Textual\\Tarea programada 1\\man-es");
+
 
 
     }

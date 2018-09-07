@@ -1,6 +1,8 @@
 package view;
 
 import domain.FileManager;
+import domain.TFIDF;
+import domain.VectorialStruct;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -17,6 +19,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.TreeMap;
 
 public class Controller {
     @FXML
@@ -84,34 +87,57 @@ public class Controller {
             String pathStopwords = txtStopwords.getText();
             String consulta = txtConsulta.getText();
             String[] stopwords;
-            ArrayList<String> files = new ArrayList<>();
+            int cantFiles=0;
+            ArrayList<String> files;
+            Map<String, ArrayList<VectorialStruct>> dicGeneral = new TreeMap<>();
             FileManager fileManager = new FileManager();
             if(!pathColeccion.isEmpty() && !pathIndice.isEmpty() && !pathStopwords.isEmpty() && !consulta.isEmpty()){
                 try {
+
                     //files = fileManager.showFiles(pathColeccion);
+
+                    files = fileManager.showFiles(pathColeccion);
+                    cantFiles = files.size();
+
                     String stopw = fileManager.getTextFile(pathStopwords);
                     stopwords = stopw.split(",");
+
                 }catch (FileNotFoundException f) {
                     f.printStackTrace();
                     System.out.println(" SGHIT");
                     return;
                 }
+                ArrayList<String> terminos;
                 for(String f: files){
                     try{
                         String text = fileManager.getTextFile(f);
                         text.replace("@","");
-                        Map<String,Integer> terminosArchivo = fileManager.createMap(text,stopwords);
-                        String nombre = f.substring(f.lastIndexOf('\\'),f.length()-1);
-                        fileManager.saveMap(terminosArchivo,pathIndice+nombre);
 
+
+                        String path = pathColeccion+f.substring(f.lastIndexOf('\\'),f.length()-1);
+                       // System.out.println(path);
+                        terminos = fileManager.createMap(text,stopwords,true);
+                        dicGeneral = fileManager.getDiccionarioGeneral(path,terminos,dicGeneral);
                     }catch (FileNotFoundException fe){
                         fe.printStackTrace();
                         System.out.println(f + " FUCCKKKKK");
                         return;
                     }
                 }
-                Map<String,Integer> consultaIndex = fileManager.createMap(consulta,stopwords);
-                System.out.println(consultaIndex.keySet().toString());
+
+                terminos = fileManager.createMap(consulta,stopwords,false);
+                Map<String,Integer> dicCons = new TreeMap<>();
+                System.out.println(terminos.toString());
+                dicCons = fileManager.getDiccionarioConsulta(terminos);
+
+                fileManager.saveDiccionario(dicGeneral,pathIndice+"\\DiccionarioGeneral",cantFiles);
+                fileManager.saveConsulta(dicCons,pathIndice+"\\DiccionarioConsulta");
+                TFIDF tfidf = new TFIDF(dicGeneral,dicCons,cantFiles);
+                tfidf.normalizarWij();
+
+
+
+
             }
 
         });
