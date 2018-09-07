@@ -93,8 +93,12 @@ public class Controller {
             FileManager fileManager = new FileManager();
             if(!pathColeccion.isEmpty() && !pathIndice.isEmpty() && !pathStopwords.isEmpty() && !consulta.isEmpty()){
                 try {
+
+                    //files = fileManager.showFiles(pathColeccion);
+
                     files = fileManager.showFiles(pathColeccion);
                     cantFiles = files.size();
+
                     String stopw = fileManager.getTextFile(pathStopwords);
                     stopwords = stopw.split(",");
 

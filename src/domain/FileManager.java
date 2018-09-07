@@ -50,6 +50,10 @@ public class FileManager {
                 }
             }
         }
+        for (int i = 0; i < filesWValidate.size(); i++)
+        {
+            System.out.println(filesWValidate.get(i).toString());
+        }
         return filesWValidate;
     }
 

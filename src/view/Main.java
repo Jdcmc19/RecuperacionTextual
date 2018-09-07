@@ -39,9 +39,10 @@ public class Main extends Application {
         hm.put("Juande",5);
 
         test.saveMap(hm);*/
-       // test.readMap("C:\\Users\\iworth\\iCloudDrive\\Desktop\\prueba\\bootparam");
-       // test.printDiccionarioGeneral(test.readDiccionarioGeneral("C:\\Users\\iworth\\iCloudDrive\\Desktop\\DiccionarioGeneral"));
-        //test.printDiccionarioConsulta(test.readConsulta("C:\\Users\\iworth\\iCloudDrive\\Desktop\\DiccionarioConsulta"));
+
+       //test.showFiles("C:\\Users\\Joseph Salas\\Desktop\\TEC\\VI Semestre\\Información Textual\\Tarea programada 1\\man-es");
+
+
 
     }
 }
