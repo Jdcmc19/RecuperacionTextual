@@ -1,9 +1,6 @@
 package view;
 
-import domain.FileManager;
-import domain.TFIDF;
-import  domain.BM25;
-import domain.VectorialStruct;
+import domain.*;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -31,10 +28,12 @@ public class Controller {
     RadioButton rdTfidf, rdBm25;
 
     FileManager fileManager = new FileManager();
-    public void initialize(){
+    Map<String, String> char200 = new TreeMap<>();
+    public void initialize() {
         ToggleGroup tg = new ToggleGroup();
         rdBm25.setToggleGroup(tg);
         rdTfidf.setToggleGroup(tg);
+
 
         btoStopwordsInd.setOnAction(event -> {
             FileChooser fileChooser = new FileChooser();
@@ -51,9 +50,30 @@ public class Controller {
             File selectedDirectory = directoryChooser.showDialog(null);
             txtIndiceInd.setText(selectedDirectory.getAbsolutePath());
         });
+        btoIndiceBusqueda.setOnAction(event -> {
+            DirectoryChooser directoryChooser = new DirectoryChooser();
+            File selectedDirectory = directoryChooser.showDialog(null);
+            txtIndiceBusqueda.setText(selectedDirectory.getAbsolutePath());
+        });
+        btoEscalafon.setOnAction(event -> {
+            DirectoryChooser directoryChooser = new DirectoryChooser();
+            File selectedDirectory = directoryChooser.showDialog(null);
+            txtEscalafonDir.setText(selectedDirectory.getAbsolutePath());
+        });
+        btoHTML.setOnAction(event -> {
+            DirectoryChooser directoryChooser = new DirectoryChooser();
+            File selectedDirectory = directoryChooser.showDialog(null);
+            txtHTMLDir.setText(selectedDirectory.getAbsolutePath());
+        });
+/*        btoEscalafonInspec.setOnAction(event -> {
+            FileChooser fileChooser = new FileChooser();
+            File file = fileChooser.showOpenDialog(null);
+            if(file!=null) txtEscalafonInspec.setText(file.getAbsolutePath());
+        });*/
 
 
-        TextField[] txt = {txtIndiceInd, txtColeccionInd, txtStopwordsInd};
+
+        TextField[] txt = {txtIndiceInd, txtColeccionInd, txtStopwordsInd,txtIndiceBusqueda,txtEscalafonDir,txtHTMLDir,txtEscalafonInspec};
         for(TextField t: txt){
             t.setOnDragOver(new EventHandler<DragEvent>() {
                 @Override
@@ -93,22 +113,12 @@ public class Controller {
             ArrayList<String> files;
             Map<String, ArrayList<VectorialStruct>> dicGeneral = new TreeMap<>();
             FileManager fileManager = new FileManager();
-
-
-            //Agregar validacion cuando algun archivo no concuerda
-            if(!pathColeccion.isEmpty() && !pathIndice.isEmpty() && !pathStopwords.isEmpty() && !consulta.isEmpty()){
-                try {
-
-                    //Devuelve funcion con los nombres de todos los arhivos
-
             if(!pathColeccion.isEmpty() && !pathIndice.isEmpty() && !pathStopwords.isEmpty()){
                 try {
-
                     files = fileManager.showFiles(pathColeccion);
                     cantFiles = files.size();
 
                     String stopw = fileManager.getTextFile(pathStopwords);
-                    //Lista con todos los stopwords
                     stopwords = stopw.split(",");
 
                 }catch (FileNotFoundException f) {
@@ -116,49 +126,29 @@ public class Controller {
                     return;
                 }
                 ArrayList<String> terminos;
+                System.out.println("CANTIDAD FILES: "+files.size());
                 for(String f: files){
                     try{
                         String text = fileManager.getTextFile(f);
                         text.replace("@","");
 
 
-
-                        String path = pathColeccion+f.substring(f.lastIndexOf('\\'));
-                       // System.out.println(path);
-
-                        String path = pathColeccion+f.substring(f.lastIndexOf('\\'),f.length());
-
+                        ///String path = pathColeccion+f.substring(f.lastIndexOf('\\'),f.length());System.out.println(f+"      \n"+path);
                         terminos = fileManager.createMap(text,stopwords,true);
-                        dicGeneral = fileManager.getDiccionarioGeneral(path,terminos,dicGeneral);
+                        dicGeneral = fileManager.getDiccionarioGeneral(f,terminos,dicGeneral);
                     }catch (FileNotFoundException fe){
                         fe.printStackTrace();
-
-                        //System.out.println(f + " FUCCKKKKK");
-
-
                         return;
                     }
                 }
 
 
 
-                //Salvan en archivos
-                fileManager.saveDiccionario(dicGeneral,pathIndice+"\\DiccionarioGeneral",cantFiles);
-                fileManager.saveConsulta(dicCons,pathIndice+"\\DiccionarioConsulta");
-
-
 
                 fileManager.saveDiccionario(dicGeneral,pathIndice+"\\DiccionarioGeneral",cantFiles);
-
-
-                BM25 bm25 = new BM25(1,1,cantFiles, dicGeneral,dicCons);
-                 bm25.getAvgdl(bm25.getWdj());
-                //TFIDF tfidf = new TFIDF(dicGeneral,dicCons,cantFiles);
-                //tfidf.calcularUltimaTabla();
 
             }
         });
-
         btoIniciarBusqueda.setOnAction(event -> {
             String consulta =  txtConsulta.getText();
             String pathStopwords = txtStopwordsInd.getText();
@@ -166,10 +156,11 @@ public class Controller {
             String escalafon = txtEscalafonDir.getText();
             String html = txtHTMLDir.getText();
             String numDoc = txtNumDoc.getText();
-
+            int numeroDocumentosRanking=0;
 
             String[] stopwords;
-            if(!consulta.isEmpty() && !pathStopwords.isEmpty() && !escalafon.isEmpty() && !html.isEmpty() && !numDoc.isEmpty()){
+            if(!consulta.isEmpty() && !pathStopwords.isEmpty() && !escalafon.isEmpty() && !html.isEmpty() && !numDoc.isEmpty() && numDoc.matches("[0-9]+")){
+                numeroDocumentosRanking = Integer.parseInt(numDoc);
                 try {
                     String stopw = fileManager.getTextFile(pathStopwords);
                     stopwords = stopw.split(",");
@@ -180,9 +171,49 @@ public class Controller {
                 ArrayList<String> terminos =  fileManager.createMap(consulta,stopwords,false);
                 Map<String,Integer> dicCons = new TreeMap<>();
                 dicCons = fileManager.getDiccionarioConsulta(terminos);
-                fileManager.saveConsulta(dicCons,indice+"\\DiccionarioConsulta");
-                TFIDF tfidf = new TFIDF(indice);
-                tfidf.calcularUltimaTabla();
+                BM25 bm25 = new BM25(0,0,1300,terminos,dicCons);
+                //TFIDF tfidf = new TFIDF(indice,dicCons);
+                //tfidf.calcularUltimaTabla();
+
+/*                fileManager.saveHistorial(tfidf.getHistorico(),indice+"\\Historico");
+                fileManager.saveRanking(tfidf.getRanking(),escalafon+"\\Ranking");
+
+                for(Rank r:tfidf.getRanking()){
+                    try {
+                        String text = fileManager.getTextFile(r.getPathDoc());
+                        String s;
+                        if(text.contains(".SH DESCRIPCIÓN")){
+                            int ind = text.indexOf(".SH DESCRIPCIÓN");
+                            text = text.replaceAll("\n"," ").replace("\t"," ").replaceAll("[\\s+]"," ");
+                            if(text.length()>ind+215){
+                                s = text.substring(ind+15,ind+215);
+                            }else{
+                                s = text.substring(ind+15);
+                            }
+                        }else
+                            s = "No se encontró :(";
+
+                        char200.put(r.getPathDoc(),s);
+                    }catch (FileNotFoundException fe){
+                        fe.printStackTrace();
+                    }
+
+                }
+                fileManager.createHTML(html,tfidf.getRanking(),char200,numeroDocumentosRanking);*/
             }
 
         });
+
+     /*   btoRankingInspec.setOnAction(event -> {
+            String path = txtEscalafonInspec.getText();
+
+            if(!path.isEmpty()){
+                ArrayList<Rank> rank = fileManager.readRanking(path);
+                String text = Inspeccion.getRankString(rank);
+                txtArea.clear();
+                txtArea.setText(text);
+            }
+        });*/
+    }
+
+}

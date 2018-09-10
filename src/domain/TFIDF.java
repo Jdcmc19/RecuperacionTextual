@@ -6,22 +6,13 @@ import java.lang.Math;
 
 public class TFIDF {
     private int N;
-
-    //Llave son todas las palabras y adentro tiene lista de diccionarios -->Archivo tal tiene tantos
     private Map<String, ArrayList<VectorialStruct>> diccionarioGeneral;
-    //Igual pero se le da vuelta. Llave geenral son los paths y la cantidad de palabras por archivo
     private Map<String, ArrayList<VectorialStruct>> diccionarioArchivos = new TreeMap<>();
-    //Diccionario de la consulta
     private Map<String, Integer>  diccionarioConsulta;
-    //Diccionario con los pesos de cada palabra
     private Map<String,ArrayList<Map<String,Double>>> wijCalculada = new TreeMap<>();
-    //Pesos de la consulta
     private Map<String, Double> wijConsulta = new TreeMap<>();
-    //lISTA CON EL RANKING
     private ArrayList<Rank> ranking = new ArrayList<>();
 
-
-    //No se usa por el momento******************************************
     public TFIDF(String path) {
         FileManager fm = new FileManager();
         this.diccionarioGeneral = fm.readDiccionarioGeneral(path+"\\DiccionarioGeneral");
@@ -33,7 +24,6 @@ public class TFIDF {
         }
         getDiccionarioArchivos();
     }
-
 
     public TFIDF(Map<String, ArrayList<VectorialStruct>> diccionarioGeneral, Map<String, Integer> diccionarioConsulta, int N) {
         this.diccionarioGeneral = diccionarioGeneral;
@@ -119,13 +109,13 @@ public class TFIDF {
         Double norma = getNormaConsulta();
         for(String word : this.diccionarioConsulta.keySet()){
             Double val = this.wijConsulta.get(word);
-            //System.out.println("anterior: "+ val+" norma: "+norma);
+            System.out.println("anterior: "+ val+" norma: "+norma);
             this.wijConsulta.put(word,val/norma);
         }
 
 
         for(String word: this.diccionarioConsulta.keySet()){
-           // System.out.println(word+ " : " + this.wijConsulta.get(word));
+            System.out.println(word+ " : " + this.wijConsulta.get(word));
         }
     }
     public void normalizarWij(){
@@ -189,10 +179,9 @@ public class TFIDF {
             Rank d = ranking.get(i);
             System.out.println(i+" :"+d.toString());
         }
+
+
     }
-
-
-
     public void getDiccionarioArchivos(){
         for(String word : this.diccionarioGeneral.keySet()){
             for(VectorialStruct vs: this.diccionarioGeneral.get(word)){

@@ -3,7 +3,6 @@ package domain;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.zip.DeflaterOutputStream;
 
 public class BM25 {
 
@@ -141,7 +140,7 @@ public class BM25 {
                     this.diccionarioArchivos.put(vs.getPath(),tmp);
                 }
                 else
-                    {
+                {
                     ArrayList<VectorialStruct> t = new ArrayList<>();
                     t.add(new VectorialStruct(word,vs.getCantidad()));
                     this.diccionarioArchivos.put(vs.getPath(),t);
@@ -150,3 +149,4 @@ public class BM25 {
         }
     }
 }
+
