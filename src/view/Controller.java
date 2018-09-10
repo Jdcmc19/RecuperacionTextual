@@ -2,6 +2,7 @@ package view;
 
 import domain.FileManager;
 import domain.TFIDF;
+import  domain.BM25;
 import domain.VectorialStruct;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -91,24 +92,24 @@ public class Controller {
             ArrayList<String> files;
             Map<String, ArrayList<VectorialStruct>> dicGeneral = new TreeMap<>();
             FileManager fileManager = new FileManager();
+
+            //Agregar validacion cuando algun archivo no concuerda
             if(!pathColeccion.isEmpty() && !pathIndice.isEmpty() && !pathStopwords.isEmpty() && !consulta.isEmpty()){
                 try {
 
-                    //files = fileManager.showFiles(pathColeccion);
-
+                    //Devuelve funcion con los nombres de todos los arhivos
                     files = fileManager.showFiles(pathColeccion);
                     cantFiles = files.size();
 
                     String stopw = fileManager.getTextFile(pathStopwords);
+                    //Lista con todos los stopwords
                     stopwords = stopw.split(",");
 
                 }catch (FileNotFoundException f) {
                     f.printStackTrace();
-                    System.out.println(" SGHIT");
                     return;
                 }
                 ArrayList<String> terminos;
-                System.out.println("CANTIDAD FILES: "+files.size());
                 for(String f: files){
                     try{
                        // System.out.println(f + " PATH");
@@ -116,13 +117,13 @@ public class Controller {
                         text.replace("@","");
 
 
-                        String path = pathColeccion+f.substring(f.lastIndexOf('\\'),f.length());
+                        String path = pathColeccion+f.substring(f.lastIndexOf('\\'));
                        // System.out.println(path);
                         terminos = fileManager.createMap(text,stopwords,true);
                         dicGeneral = fileManager.getDiccionarioGeneral(path,terminos,dicGeneral);
                     }catch (FileNotFoundException fe){
                         fe.printStackTrace();
-                        System.out.println(f + " FUCCKKKKK");
+                        //System.out.println(f + " FUCCKKKKK");
                         return;
                     }
                 }
@@ -132,13 +133,16 @@ public class Controller {
                 //System.out.println(terminos.toString());
                 dicCons = fileManager.getDiccionarioConsulta(terminos);
 
+                //Salvan en archivos
                 fileManager.saveDiccionario(dicGeneral,pathIndice+"\\DiccionarioGeneral",cantFiles);
                 fileManager.saveConsulta(dicCons,pathIndice+"\\DiccionarioConsulta");
-                TFIDF tfidf = new TFIDF(dicGeneral,dicCons,cantFiles);
-                tfidf.calcularUltimaTabla();
 
 
 
+                BM25 bm25 = new BM25(1,1,cantFiles, dicGeneral,dicCons);
+                 bm25.getAvgdl(bm25.getWdj());
+                //TFIDF tfidf = new TFIDF(dicGeneral,dicCons,cantFiles);
+                //tfidf.calcularUltimaTabla();
 
             }
 

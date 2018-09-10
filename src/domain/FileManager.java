@@ -29,8 +29,6 @@ public class FileManager {
         {
             subDirPath.add(directoryPath+"\\"+directories[i]);
         }
-
-
         //Obtiene todos los archivos por subdirectorio
         for (int y = 0; y<subDirPath.size(); y++)
         {
@@ -52,7 +50,7 @@ public class FileManager {
         }
         for (int i = 0; i < filesWValidate.size(); i++)
         {
-            System.out.println(filesWValidate.get(i).toString());
+            //System.out.println(filesWValidate.get(i).toString());
         }
         return filesWValidate;
     }
@@ -68,6 +66,7 @@ public class FileManager {
             else return  "";
     }
 
+    //Recupera toda un linea de un texto
     public String getTextFile(String path)throws FileNotFoundException{
         File file = new File(path);
         Scanner sc = new Scanner(file);
@@ -75,7 +74,7 @@ public class FileManager {
         sc.useDelimiter("\\Z");
         return sc.next();
     }
-    public ArrayList<String> createMap(String text, String[] stop,boolean type)
+    public ArrayList<String> createMap(String text, String[] stop, boolean type)
     {
 
         String[] lineas = text.split("\n");

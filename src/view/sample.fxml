@@ -21,9 +21,9 @@
          <children>
             <RadioButton fx:id="rdTfidf" layoutX="129.0" layoutY="209.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="107.0" text="Modelo TF*IDF" />
             <RadioButton fx:id="rdBm25" layoutX="129.0" layoutY="234.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="107.0" text="Modelo BM25" />
-            <TextField fx:id="txtIndice" layoutX="128.0" layoutY="115.0" prefHeight="25.0" prefWidth="239.0" promptText="Ruta para almacenar indices." text="C:\Users\iworth\iCloudDrive\Desktop\si" />
-            <TextField fx:id="txtColeccion" layoutX="128.0" layoutY="83.0" prefHeight="25.0" prefWidth="239.0" promptText="Ruta de archivos a cargar." text="C:\Users\iworth\iCloudDrive\Desktop\prueba1" />
-            <TextField fx:id="txtStopwords" layoutX="128.0" layoutY="51.0" prefHeight="25.0" prefWidth="239.0" promptText="Ruta del archivo de Stopwords." text="C:\Users\iworth\iCloudDrive\Desktop\sttt.txt" />
+            <TextField fx:id="txtIndice" layoutX="128.0" layoutY="115.0" prefHeight="25.0" prefWidth="239.0" promptText="Ruta para almacenar indices." text="C:\Users\Joseph Salas\Desktop\TEC\VI Semestre\Información Textual\Tarea programada 1" />
+            <TextField fx:id="txtColeccion" layoutX="128.0" layoutY="83.0" prefHeight="25.0" prefWidth="239.0" promptText="Ruta de archivos a cargar." text="C:\Users\Joseph Salas\Desktop\TEC\VI Semestre\Información Textual\Tarea programada 1\man-es" />
+            <TextField fx:id="txtStopwords" layoutX="128.0" layoutY="51.0" prefHeight="25.0" prefWidth="239.0" promptText="Ruta del archivo de Stopwords." text="C:\Users\Joseph Salas\Desktop\TEC\VI Semestre\Información Textual\Tarea programada 1\sttt.txt" />
             <Label layoutX="52.0" layoutY="51.0" prefHeight="25.0" prefWidth="77.0" text="Stopwords:" />
             <Label layoutX="52.0" layoutY="83.0" prefHeight="25.0" prefWidth="77.0" text="Colección:" />
             <Label layoutX="52.0" layoutY="115.0" prefHeight="25.0" prefWidth="77.0" text="Indice:" />
